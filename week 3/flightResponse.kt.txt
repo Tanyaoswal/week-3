@@ -1,0 +1,24 @@
+data class FlightResponse(
+    val data: List<FlightData>
+)
+
+data class FlightData(
+    val airline: Airline,
+    val flight: FlightDetails,
+    val arrival: LocationDetails,
+    val departure: LocationDetails
+)
+
+data class Airline(
+    val name: String
+)
+
+data class FlightDetails(
+    val number: String,
+    val status: String
+)
+
+data class LocationDetails(
+    val airport: String,
+    val scheduled: String
+)

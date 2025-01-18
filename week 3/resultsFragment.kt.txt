@@ -1,0 +1,50 @@
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class ResultsFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_results, container, false)
+
+        val flightNumber = arguments?.getString("flightNumber") ?: ""
+        val date = arguments?.getString("date") ?: ""
+
+        val resultsTextView = view.findViewById<TextView>(R.id.tv_results)
+
+        // Make API call
+        RetrofitClient.instance.getFlightStatus(flightNumber, date, "YOUR_API_KEY")
+            .enqueue(object : Callback<FlightResponse> {
+                override fun onResponse(call: Call<FlightResponse>, response: Response<FlightResponse>) {
+                    if (response.isSuccessful) {
+                        val data = response.body()?.data?.firstOrNull()
+                        data?.let {
+                            val result = """
+                                Airline: ${it.airline.name}
+                                Flight: ${it.flight.number} (${it.flight.status})
+                                Departure: ${it.departure.airport} (${it.departure.scheduled})
+                                Arrival: ${it.arrival.airport} (${it.arrival.scheduled})
+                            """.trimIndent()
+                            resultsTextView.text = result
+                        }
+                    } else {
+                        resultsTextView.text = "Failed to fetch data"
+                    }
+                }
+
+                override fun onFailure(call: Call<FlightResponse>, t: Throwable) {
+                    resultsTextView.text = "Error: ${t.message}"
+                }
+            })
+
+        return view
+    }
+}

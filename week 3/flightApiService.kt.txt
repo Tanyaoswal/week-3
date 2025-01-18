@@ -1,0 +1,13 @@
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+// Replace BASE_URL and endpoints based on your flight API
+interface FlightApiService {
+    @GET("flights")
+    fun getFlightStatus(
+        @Query("flight_number") flightNumber: String,
+        @Query("date") date: String,
+        @Query("access_key") apiKey: String // Pass your API key here
+    ): Call<FlightResponse>
+}

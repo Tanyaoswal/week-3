@@ -1,0 +1,14 @@
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+object RetrofitClient {
+    private const val BASE_URL = "https://api.aviationstack.com/v1/" // Replace with your API URL
+
+    val instance: FlightApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(FlightApiService::class.java)
+    }
+}
